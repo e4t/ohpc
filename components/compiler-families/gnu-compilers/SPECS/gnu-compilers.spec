@@ -33,6 +33,7 @@ Source2:   ftp://ftp.gnu.org/gnu/mpc/mpc-%{mpc_version}.tar.gz
 #Source3:   http://www.mpfr.org/mpfr-current/mpfr-%{mpfr_version}.tar.gz
 Source3:   http://ftp.gnu.org/gnu/mpfr/mpfr-%{mpfr_version}.tar.gz
 Source4:   OHPC_macros
+Patch1:	   HOTFIX-Get-inline-attribute-in-sync-with-declarartion.patch
 BuildRoot: %{_tmppath}/%{pname}-%{version}-%{release}-root
 
 %define debug_package %{nil}
@@ -65,6 +66,8 @@ frontend.
 %setup -n gcc-%{version} -T -D -a 1
 %setup -n gcc-%{version} -T -D -a 2
 %setup -n gcc-%{version} -T -D -a 3
+
+%patch1 -p1
 
 ln -s gmp-%{gmp_version} gmp
 ln -s mpc-%{mpc_version} mpc

@@ -1,0 +1,27 @@
+From: Egbert Eich <eich@suse.de>
+Date: Thu Sep 8 15:38:49 2016 +0200
+Subject: [PATCH]HOTFIX: Get inline attribute in sync with declarartion
+Patch-mainline: never
+Git-commit: 913a1b7fb704076d8205cc25c9341cae1d9aa1bf
+References: 
+Signed-off-by: Egbert Eich <eich@suse.com>
+
+Signed-off-by: Egbert Eich <eich@suse.de>
+---
+ gcc/cp/cfns.h | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/gcc/cp/cfns.h b/gcc/cp/cfns.h
+index 1c6665d..1205b4c 100644
+--- a/gcc/cp/cfns.h
++++ b/gcc/cp/cfns.h
+@@ -124,9 +124,6 @@ hash (register const char *str, register unsigned int len)
+ 
+ #ifdef __GNUC__
+ __inline
+-#ifdef __GNUC_STDC_INLINE__
+-__attribute__ ((__gnu_inline__))
+-#endif
+ #endif
+ const char *
+ libc_name_p (register const char *str, register unsigned int len)
