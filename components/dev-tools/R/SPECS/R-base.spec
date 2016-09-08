@@ -116,8 +116,8 @@ Requires:       make
 Requires:       readline
 Requires:       xdg-utils
 %if 0%{?suse_version}  
-BuildRequires:  libicu52_1
-Requires:	libicu52_1
+BuildRequires:  libicu-devel
+Requires:	libicu
 %else
 BuildRequires:  libicu
 Requires:	libicu
