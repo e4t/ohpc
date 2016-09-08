@@ -33,6 +33,7 @@ Packager: %{?_packager}%{!?_packager:Michael Jennings <mej@lbl.gov>}
 Vendor:  %{?_vendorinfo}%{!?_vendorinfo:Warewulf Project (http://warewulf.lbl.gov/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
 Requires: bash
+Requires: systemd
 BuildConflicts: post-build-checks
 BuildArch: noarch
 BuildRoot: %{?_tmppath}%{!?_tmppath:/var/tmp}/%{pname}-%{version}-%{release}-root
@@ -61,8 +62,11 @@ which checks should be run on which nodes.
 %install
 umask 0077
 %{__make} install DESTDIR=$RPM_BUILD_ROOT %{?mflags_install}
-
-%{__mkdir} -p $RPM_BUILD_ROOT/%{_docdir}
+%{__mkdir_p} %{buildroot}%{_docdir}
+%{__mkdir_p} %{buildroot}%{_libexecdir}/tmpfiles.d
+%{__cat} > %{buildroot}%{_libexecdir}/tmpfiles.d/%{sname}.conf <<EOF
+d %{_localstatedir}/run/%{sname} 0755 root root -
+EOF
 
 %check
 %{__make} test
@@ -78,7 +82,6 @@ test "$RPM_BUILD_ROOT" != "/" && %{__rm} -rf $RPM_BUILD_ROOT
 %doc COPYING ChangeLog LICENSE
 %dir %{_sysconfdir}/%{sname}/
 %dir %{_localstatedir}/lib/%{sname}/
-%dir %{_localstatedir}/run/%{sname}/
 %dir %{nhc_script_dir}/
 %dir %{nhc_helper_dir}/
 %config(noreplace) %{_sysconfdir}/%{sname}/%{sname}.conf
@@ -88,3 +91,4 @@ test "$RPM_BUILD_ROOT" != "/" && %{__rm} -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sbindir}/%{sname}
 %config(noreplace) %{_sbindir}/%{sname}-genconf
 %config(noreplace) %{_sbindir}/%{sname}-wrapper
+%config(noreplace) %{_libexecdir}/tmpfiles.d/%{sname}.conf
