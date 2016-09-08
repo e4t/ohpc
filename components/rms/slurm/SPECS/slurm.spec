@@ -161,11 +161,7 @@ BuildRequires: readline-devel
 %endif
 
 %if %{slurm_with openssl}
-%if 0%{?suse_version}
-BuildRequires: libopenssl0_9_8
-%else
 BuildRequires: openssl-devel >= 0.9.6 openssl >= 0.9.6
-%endif
 %endif
 
 #%if %{slurm_with mysql}
