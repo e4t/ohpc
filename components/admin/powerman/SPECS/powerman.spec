@@ -59,6 +59,10 @@ BuildRequires: curl-devel
 %if 0%{?_with_snmppower}
 BuildRequires: net-snmp-devel
 %endif
+%if 0%{?suse_version}
+BuildRequires: systemd-devel
+BuildRequires: pkgconfig
+%endif
 BuildRequires: systemd
 
 %package -n %{pname}-devel%{PROJ_DELIM}
