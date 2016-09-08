@@ -84,7 +84,6 @@ BuildRequires: -post-build-checks
 %endif
 
 Requires: nagios-common%{PROJ_DELIM} >= 3.3.1-1
-Provides: %{name}
 Provides: %{pname}
 
 # nagios-plugins-1.4.16: the included gnulib files were last updated
