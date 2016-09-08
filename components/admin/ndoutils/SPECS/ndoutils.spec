@@ -127,7 +127,7 @@ mv %{buildroot}%{_sysconfdir}/nagios/ndomod.cfg-sample \
 # Remove some spurious permissions from docs
 find docs/html -name "*.*" -exec chmod 644 {} \;
 
-%if 0%{?fedora} || 0%{?rhel} >= 7
+%if 0%{?fedora} || 0%{?rhel} >= 7 || 0%{?suse_version}
 
 # Systemd unit files
 mkdir -p %{buildroot}%{_unitdir}
@@ -147,7 +147,6 @@ install -p -m 755 -D %{SOURCE3} %{buildroot}%{_initrddir}/ndo2db
 #mkdir -p %{buildroot}%{_localstatedir}/run/ndoutils
 
 %endif
-mkdir -p %{buildroot}%{_localstatedir}/run/ndoutils
 
 %clean
 rm -rf %{buildroot}
@@ -167,7 +166,7 @@ rm -rf %{buildroot}
 %{_sbindir}/ndo2db
 %{_sbindir}/sockdebug
 
-%if 0%{?fedora} || 0%{?rhel} >= 7
+%if 0%{?fedora} || 0%{?rhel} >= 7 || 0%{?suse_version}
 
 #%dir %attr(-,nagios,root) /run/%{pname}/
 %{_tmpfilesdir}/ndoutils.conf
@@ -179,7 +178,6 @@ rm -rf %{buildroot}
 %{_initrddir}/ndo2db
 
 %endif
-%dir %attr(-,nagios,root) %{_localstatedir}/run/ndoutils
 
 %if 0%{?fedora} || 0%{?rhel} >= 7
 
