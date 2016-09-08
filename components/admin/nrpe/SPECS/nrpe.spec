@@ -19,6 +19,12 @@
 %global _hardened_build 1
 %endif
 %define nsport 5666
+%if 0%{?fedora} > 14 || 0%{?rhel} > 6 || 0%{?suse_version}
+%define have_systemd 1
+%endif
+%if 0%{?el4}%{?el5}%{?el6}
+%define have_systemd 0
+%endif
 
 Name: %{pname}%{PROJ_DELIM}
 Version: 2.15
@@ -59,9 +65,10 @@ BuildRequires: libtool
 BuildRequires: openssl-devel
 # OpenSSL package was split into openssl and openssl-libs in F18+
 BuildRequires: openssl
-#%if 0%{?fedora} > 17 || 0%{?rhel} > 6
+%if 0%{?have_systemd}
 BuildRequires:  systemd
-#%endif
+Requires:  systemd
+%endif
 
 %if 0%{?sles_version} || 0%{?suse_version}
 #!BuildIgnore: brp-check-suse
@@ -80,7 +87,7 @@ BuildRequires: tcp_wrappers-devel
 
 Requires(pre): %{_sbindir}/useradd
 
-%if 0%{?el4}%{?el5}%{?el6}
+%if 0%{?have_systemd}
 Requires(preun): /sbin/service, /sbin/chkconfig
 Requires(post): /sbin/chkconfig, /sbin/service
 Requires(postun): /sbin/service
@@ -173,11 +180,11 @@ install -D -p -m 0755 src/nrpe %{buildroot}/%{_sbindir}/nrpe
 install -D -p -m 0755 src/check_nrpe %{buildroot}/%{_libdir}/nagios/plugins/check_nrpe
 install -D -p -m 0644 %{SOURCE1} %{buildroot}/%{_sysconfdir}/sysconfig/%{pname}
 install -d %{buildroot}%{_sysconfdir}/nrpe.d
-install -d %{buildroot}%{_localstatedir}/run/%{pname}
-%if 0%{?fedora} > 14 || 0%{?rhel} > 6
+%if 0%{?have_systemd}
 install -D -p -m 0644 %{SOURCE2} %{buildroot}%{_tmpfilesdir}/%{pname}.conf
+%else
+install -d %{buildroot}%{_localstatedir}/run/%{pname}
 %endif
-
 
 %clean
 rm -rf %{buildroot}
@@ -198,12 +205,12 @@ fi
 %endif
 
 %post
-%if 0%{?el4}%{?el5}%{?el6}
-/sbin/chkconfig --add %{pname} || :
-%else
+%if 0%{?have_systemd}
 #%systemd_post nrpe.service
 /usr/bin/systemctl enable nrpe.service > /dev/null 2>&1 || :
 /usr/bin/systemctl start nrpe.service  > /dev/null 2>&1 || :
+%else
+/sbin/chkconfig --add %{pname} || :
 %endif
 
 %postun
@@ -221,10 +228,10 @@ fi
 %endif
 
 %files
-%if 0%{?el4}%{?el5}%{?el6}
-%{_initrddir}/nrpe
-%else
+%if 0%{?have_systemd}
 %{_unitdir}/%{pname}.service
+%else
+%{_initrddir}/nrpe
 %endif
 %{_sbindir}/nrpe
 %dir %{_sysconfdir}/nrpe.d
@@ -237,7 +244,11 @@ fi
 %config(noreplace) %{_tmpfilesdir}/%{pname}.conf
 %endif
 %doc Changelog LEGAL README README.SSL SECURITY docs/NRPE.pdf
+%if 0%{?have_systemd}
+%{_tmpfilesdir}/%{pname}.conf
+%else
 %dir %attr(775, %{pname}, %{pname}) %{_localstatedir}/run/%{pname}
+%endif
 
 %files -n nagios-plugins-nrpe%{PROJ_DELIM}
 %{_libdir}/nagios/plugins/check_nrpe
