@@ -1,0 +1,40 @@
+From: Egbert Eich <eich@suse.de>
+Date: Fri Sep 9 22:10:42 2016 +0200
+Subject: [PATCH]Add -std=gnu90 to get back behavior of an older compiler
+Patch-mainline: never
+Git-commit: 30e3f290f88edb3fd23f6c99cd8fd1e7100d8c0f
+References: 
+Signed-off-by: Egbert Eich <eich@suse.com>
+
+Signed-off-by: Egbert Eich <eich@suse.de>
+---
+ initramfs/Makefile.am | 2 +-
+ initramfs/Makefile.in | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/initramfs/Makefile.am b/initramfs/Makefile.am
+index 1fbd8be..975b230 100644
+--- a/initramfs/Makefile.am
++++ b/initramfs/Makefile.am
+@@ -24,7 +24,7 @@ e2fsprogs:
+ 	@ if [ ! -f "_work/$(E2FSPROGS_DIR)/misc/mke2fs" ]; then \
+ 		echo "Building e2fsprogs" ;\
+ 		(cd _work/$(E2FSPROGS_DIR)/; ./configure $(E2FSPROGS_CONFIGARGS)) ;\
+-		make -C _work/$(E2FSPROGS_DIR);\
++		make -C _work/$(E2FSPROGS_DIR) CFLAGS="-std=gnu90";\
+ 	fi
+ 
+ 
+diff --git a/initramfs/Makefile.in b/initramfs/Makefile.in
+index 7c7a7f7..0830301 100644
+--- a/initramfs/Makefile.in
++++ b/initramfs/Makefile.in
+@@ -528,7 +528,7 @@ e2fsprogs:
+ 	@ if [ ! -f "_work/$(E2FSPROGS_DIR)/misc/mke2fs" ]; then \
+ 		echo "Building e2fsprogs" ;\
+ 		(cd _work/$(E2FSPROGS_DIR)/; ./configure $(E2FSPROGS_CONFIGARGS)) ;\
+-		make -C _work/$(E2FSPROGS_DIR);\
++		make -C _work/$(E2FSPROGS_DIR) CFLAGS="-std=gnu90";\
+ 	fi
+ 
+ busybox:
