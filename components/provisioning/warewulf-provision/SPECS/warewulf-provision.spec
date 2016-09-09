@@ -68,8 +68,8 @@ Requires: mod_perl httpd tftp-server dhcp xinetd tcpdump
 %endif
 
 # charles.r.baird@intel.com - required to determine where to stick warewulf-httpd.conf
-%if 0%{?sles_version} || 0%{?suse_version} == 1315
-BuildRequires: sles-release
+%if 0%{?sles_version} || 0%{?suse_version}
+BuildRequires: distribution-release
 %endif
 
 %description -n %{pname}-server%{PROJ_DELIM}
