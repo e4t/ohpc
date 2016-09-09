@@ -8,7 +8,7 @@
 +if test -f /etc/debian_version; then
 +  ISDEB_TRUE=
 +  ISDEB_FALSE='#'
-+elif test -f /etc/SuSE-release; then
++elif test -f /etc/SuSE-release || grep -q SUSE /etc/os-release 2>/dev/null; then
    ISDEB_TRUE=
    ISDEB_FALSE='#'
  else
