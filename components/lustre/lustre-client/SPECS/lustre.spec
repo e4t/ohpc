@@ -181,7 +181,9 @@ DocDir: %{OHPC_PUB}/doc/contrib
 BuildRoot: %{_tmppath}/lustre-%{version}-root
 Obsoletes: lustre-lite, lustre-lite-utils, lustre-ldap nfs-utils-lustre
 Provides: lustre-lite = %{version}, lustre-lite-utils = %{version}
+%if %{with lustre_modules}
 Requires: %{name}-modules = %{version}
+%endif
 BuildRequires: libtool
 %if %{with servers}
 Requires: lustre-osd
@@ -229,7 +231,9 @@ Lustre file system, server and network drivers for Linux %{kversion}.
 %if %{with ldiskfs}
 %package osd-ldiskfs
 Summary: osd-ldiskfs contains both ldiskfs and its osd interface in Lustre.
+%if %{with lustre_modules}
 Requires: lustre-modules = %{version}
+%endif
 Requires: module-init-tools >= 3.9
 Requires: ldiskfsprogs >= 1.42.7.wc1
 Requires: lustre-osd-ldiskfs-mount
@@ -259,7 +263,10 @@ LDISKFS hooks for mount/mkfs into a dynamic library.
 %if %{with zfs}
 %package osd-zfs
 Summary: osd-zfs is the mandatory glue for ZFS support in Lustre.
-Requires: lustre-modules = %{version}, zfs-kmod
+%if %{with lustre_modules}
+Requires: lustre-modules = %{version}
+%endif
+Requires: zfs-kmod
 Requires: lustre-osd-zfs-mount
 Provides: lustre-osd
 Group: Development/Kernel
@@ -330,7 +337,10 @@ systems.
 Summary: Lustre testing framework
 Group: Development/Kernel
 Provides: %{name}-tests = %{version}
-Requires: %{name} = %{version}, %{name}-modules = %{version}, lustre-iokit
+Requires: %{name} = %{version}, lustre-iokit
+%if %{with lustre_modules}
+Requires: %{name}-modules = %{version}
+%endif
 Requires: attr, rsync, perl, lsof, /usr/bin/getconf
 
 %description tests
