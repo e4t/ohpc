@@ -76,6 +76,7 @@ Source0: http://users.nccs.gov/~pnorbert/adios-%{version}.tar.gz
 Source1: OHPC_macros
 Source2: OHPC_setup_compiler
 AutoReq: no
+Patch1:  macro-define-separate-ADIOS_STATISTICS-macros-for-int-and-float.patch
 
 # Minimum Build Requires - our mxml build included devel headers in libmxml1
 BuildRequires: libmxml1 cmake zlib-devel glib2-devel
@@ -122,6 +123,8 @@ how they process the data.
 
 %prep
 %setup -q -n %{pname}-%{version}
+
+%patch1 -p1
 
 %build
 sed -i 's|@BUILDROOT@|%buildroot|' wrappers/numpy/setup*

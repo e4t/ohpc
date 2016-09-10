@@ -1,0 +1,69 @@
+From: Egbert Eich <eich@suse.de>
+Date: Sat Sep 10 14:59:31 2016 +0200
+Subject: [PATCH]macro: define separate ADIOS_STATISTICS macros for int and float
+Patch-mainline: to be upstreamed
+Git-commit: d226fff9bb1416bac0aa8ac001d7481b96a83fa6
+Signed-off-by: Egbert Eich <eich@suse.com>
+
+isnan() and isinf() both expect floating point arguments.
+The compiler will error on int arguments.
+
+Signed-off-by: Egbert Eich <eich@suse.de>
+---
+ src/core/adios_internals.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
+
+diff --git a/src/core/adios_internals.c b/src/core/adios_internals.c
+index 6e897c1..465d96d 100644
+--- a/src/core/adios_internals.c
++++ b/src/core/adios_internals.c
+@@ -4932,7 +4932,8 @@ int adios_generate_var_characteristics_v1 (struct adios_file_struct * fd, struct
+ #endif
+ 
+ #if 1
+-#define ADIOS_STATISTICS(a,b) \
++
++#define ADIOS_STATISTICS_T(a,b,NO_NUM)     \
+ {\
+     a * data = (a *) var->data; \
+     int i, j; \
+@@ -4967,7 +4968,7 @@ int adios_generate_var_characteristics_v1 (struct adios_file_struct * fd, struct
+         size = 0; \
+         while ((size * b) < total_size) \
+         { \
+-            if (isnan (data [size]) || !isfinite (data [size])) {\
++            if (NO_NUM(data[size])) {\
+                 size ++; \
+                 continue; \
+             }\
+@@ -4998,6 +4999,13 @@ int adios_generate_var_characteristics_v1 (struct adios_file_struct * fd, struct
+         * ((uint8_t * ) stats[map[adios_statistic_finite]].data) = finite; \
+         return 0; \
+     }
++
++#define NO_NUM_I(x)  0
++#define ADIOS_STATISTICS(a,b) ADIOS_STATISTICS_T(a,b,NO_NUM_I)
++
++#define NO_NUM_V(x)  (isnan (x) || !isfinite (x))
++#define ADIOS_STATISTICS_F(a,b) ADIOS_STATISTICS_T(a,b,NO_NUM_V)
++
+ #else
+ #define MIN_MAX(a,b)\
+     {\
+@@ -5039,13 +5047,13 @@ int adios_generate_var_characteristics_v1 (struct adios_file_struct * fd, struct
+                                         ADIOS_STATISTICS(uint64_t,8)
+ 
+         case adios_real:
+-                                            ADIOS_STATISTICS(float,4)
++                                            ADIOS_STATISTICS_F(float,4)
+ 
+         case adios_double:
+-                                                ADIOS_STATISTICS(double,8)
++                                                ADIOS_STATISTICS_F(double,8)
+ 
+         case adios_long_double:
+-                                                    ADIOS_STATISTICS(long double,16)
++                                                    ADIOS_STATISTICS_F(long double,16)
+ 
+         case adios_complex:
+         {
