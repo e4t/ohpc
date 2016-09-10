@@ -198,6 +198,7 @@ BuildRequires: libselinux-devel
 Requires: libselinux
 %endif
 %endif
+Patch2: lustreapi-Fix-bad-but-correct-code-to-muffle-picky-compiler.patch
 
 %description
 Userspace tools and files for the Lustre file system.
@@ -379,6 +380,7 @@ clients in order to run
 
 %setup -qn lustre-%{version}
 #patch1 -p1
+%patch2 -p1
 
 ln lustre/ChangeLog ChangeLog-lustre
 ln lnet/ChangeLog ChangeLog-lnet
