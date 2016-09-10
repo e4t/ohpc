@@ -31,6 +31,14 @@ BuildRequires: kernel-default-devel = 3.12.49-11.1
 %define kobjdir /lib/modules/3.12.49-11-default/build/
 %endif
 
+%if 0%{?suse_version} > 1315 || 0%{?sle_version} > 120100
+BuildRequires: kernel-source
+BuildRequires: kernel-default-devel
+%define kver %(readlink /usr/src/linux | sed "s#linux-##")
+%define kdir /lib/modules/%{kver}-default/source/
+%define kobjdir /lib/modules/%{kver}-default/build/
+%endif
+
 %if 0%{?centos_version} == 600
 BuildRequires: kernel = 2.6.32-431.el6
 BuildRequires: kernel-devel = 2.6.32-431.el6
@@ -68,7 +76,11 @@ BuildRequires:	-post-build-checks
 %bcond_without lustre_tests
 %bcond_without lustre_utils
 %bcond_without lustre_iokit
+%if 0%{?suse_version} > 1315 || 0%{?sle_version} > 120100
+%bcond_with lustre_modules
+%else
 %bcond_without lustre_modules
+%endif
 %bcond_with lnet_dlc
 
 %if %{without servers}
@@ -544,6 +556,9 @@ fi
 find $RPM_BUILD_ROOT%{?rootdir}/lib/modules/%{kversion}/%{kmoddir} \
     -name \*.ko -type f -exec chmod u+x {} \;
 %endif
+%endif
+%if %{without lustre_modules}
+%{__rm} %{buildroot}/etc/modprobe.d/ko2iblnd.conf
 %endif
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}/%{_docdir}
