@@ -1,0 +1,31 @@
+From: Egbert Eich <eich@suse.de>
+Date: Sat Sep 10 10:22:44 2016 +0200
+Subject: [PATCH]lustreapi: Fix bad but correct code to muffle picky compiler
+Patch-mainline: to be upstreamed
+Git-commit: ddeb6e6e2173159865ed50e1bb636cf735a695f7
+References: 
+Signed-off-by: Egbert Eich <eich@suse.com>
+
+Signed-off-by: Egbert Eich <eich@suse.de>
+---
+ lustre/utils/liblustreapi_hsm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/lustre/utils/liblustreapi_hsm.c b/lustre/utils/liblustreapi_hsm.c
+index 3536496..4ae94af 100644
+--- a/lustre/utils/liblustreapi_hsm.c
++++ b/lustre/utils/liblustreapi_hsm.c
+@@ -428,11 +428,12 @@ static int llapi_hsm_log_ct_progress(struct hsm_copyaction_private **phcp,
+ 			goto err;
+ 	}
+ 
+-	if (progress_type == CT_RUNNING)
++	if (progress_type == CT_RUNNING) {
+ 		rc = llapi_json_add_item(&json_items, "current_bytes",
+ 					 LLAPI_JSON_BIGNUM, &current);
+ 		if (rc < 0)
+ 			goto err;
++	}
+ 
+ cancel:
+ 	rc = llapi_json_add_item(&json_items, "event_type", LLAPI_JSON_STRING,
