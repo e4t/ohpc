@@ -1,0 +1,171 @@
+From: Egbert Eich <eich@suse.de>
+Date: Mon Sep 12 12:52:28 2016 +0200
+Subject: readdir: remove the use of readdir_d()
+Git-commit: 80e31f1813514dc7461b1b4a55058639c9b19536
+References: 
+
+readdir_d() is deprecated on newer versions of glibc.
+
+Signed-off-by: Egbert Eich <eich@suse.de>
+Signed-off-by: Egbert Eich <eich@suse.com>
+---
+ lustre/utils/lhsmtool_posix.c | 41 ++++++++++++++++++++++++-----------------
+ lustre/utils/liblustreapi.c   | 25 ++++++++++++++-----------
+ 2 files changed, 38 insertions(+), 28 deletions(-)
+diff --git a/lustre/utils/lhsmtool_posix.c b/lustre/utils/lhsmtool_posix.c
+index 40cbf3c..8230ea9 100644
+--- a/lustre/utils/lhsmtool_posix.c
++++ b/lustre/utils/lhsmtool_posix.c
+@@ -1466,7 +1466,7 @@ static int ct_import_fid(const lustre_fid *import_fid)
+ static int ct_import_recurse(const char *relpath)
+ {
+ 	DIR		*dir;
+-	struct dirent	 ent, *cookie = NULL;
++	struct dirent   *ent_p;
+ 	char		*srcpath, *newpath;
+ 	lustre_fid	 import_fid;
+ 	int		 rc;
+@@ -1504,30 +1504,34 @@ static int ct_import_recurse(const char *relpath)
+ 	free(srcpath);
+ 
+ 	while (1) {
+-		rc = readdir_r(dir, &ent, &cookie);
++		rc = errno = 0;
++		if ((ent_p = readdir(dir)) == NULL) {
++			if (errno == 0) {
++				/* end of directory */
++				break;
++			}
++			rc = -errno;
++		}
+ 		if (rc != 0) {
+ 			rc = -errno;
+ 			CT_ERROR(rc, "cannot readdir_r '%s'", relpath);
+ 			err_major++;
+ 			goto out;
+-		} else if ((rc == 0) && (cookie == NULL)) {
+-			/* end of directory */
+-			break;
+ 		}
+ 
+-		if (!strcmp(ent.d_name, ".") ||
+-		    !strcmp(ent.d_name, ".."))
++		if (!strcmp(ent_p->d_name, ".") ||
++		    !strcmp(ent_p->d_name, ".."))
+ 			continue;
+ 
+ 		/* New relative path */
+-		newpath = path_concat(relpath, ent.d_name);
++		newpath = path_concat(relpath, ent_p->d_name);
+ 		if (newpath == NULL) {
+ 			err_major++;
+ 			rc = -ENOMEM;
+ 			goto out;
+ 		}
+ 
+-		if (ent.d_type == DT_DIR) {
++		if (ent_p->d_type == DT_DIR) {
+ 			rc = ct_import_recurse(newpath);
+ 		} else {
+ 			char src[PATH_MAX];
+@@ -1704,7 +1708,7 @@ static int ct_dir_level_max(const char *dirpath, __u16 *sub_seqmax)
+ 	DIR		*dir;
+ 	int		 rc;
+ 	__u16		 sub_seq;
+-	struct dirent	 ent, *cookie = NULL;
++	struct dirent    *ent_p;
+ 
+ 	*sub_seqmax = 0;
+ 
+@@ -1715,18 +1719,21 @@ static int ct_dir_level_max(const char *dirpath, __u16 *sub_seqmax)
+ 		return rc;
+ 	}
+ 
+-	while ((rc = readdir_r(dir, &ent, &cookie)) == 0) {
+-		if (cookie == NULL)
+-			/* end of directory.
+-			 * rc is 0 and seqmax contains the max value. */
++	for (;;) {
++		rc = errno = 0;
++		ent_p = readdir(dir);
++		if (!ent_p) {
++			if (errno)
++				break;
+ 			goto out;
++		}
+ 
+-		if (!strcmp(ent.d_name, ".") || !strcmp(ent.d_name, ".."))
++		if (!strcmp(ent_p->d_name, ".") || !strcmp(ent_p->d_name, ".."))
+ 			continue;
+ 
+-		if (sscanf(ent.d_name, "%hx", &sub_seq) != 1) {
++		if (sscanf(ent_p->d_name, "%hx", &sub_seq) != 1) {
+ 			CT_TRACE("'%s' has an unexpected dirname format, "
+-				 "skip entry", ent.d_name);
++				 "skip entry", ent_p->d_name);
+ 			continue;
+ 		}
+ 		if (sub_seq > *sub_seqmax)
+diff --git a/lustre/utils/liblustreapi.c b/lustre/utils/liblustreapi.c
+index dd236a8..1185f81 100644
+--- a/lustre/utils/liblustreapi.c
++++ b/lustre/utils/liblustreapi.c
+@@ -1130,8 +1130,7 @@ int llapi_get_poollist(const char *name, char **poollist, int list_size,
+ 	char *fsname;
+         char *ptr;
+         DIR *dir;
+-        struct dirent pool;
+-        struct dirent *cookie = NULL;
++        struct dirent *pool_p;
+         int rc = 0;
+         unsigned int nb_entries = 0;
+         unsigned int used = 0;
+@@ -1184,19 +1183,23 @@ int llapi_get_poollist(const char *name, char **poollist, int list_size,
+ 	}
+ 
+ 	while(1) {
+-		rc = readdir_r(dir, &pool, &cookie);
++		rc = errno = 0;
++		if ((pool_p = readdir(dir)) == NULL) {
++			if (errno == 0) {
++				/* end of directory */
++				break;
++			}
++			rc = -errno;
++		}
+ 		if (rc != 0) {
+ 			rc = -errno;
+ 			llapi_error(LLAPI_MSG_ERROR, rc,
+ 				    "Error reading pool list for '%s'", name);
+ 			goto free_path;
+-		} else if ((rc == 0) && (cookie == NULL)) {
+-			/* end of directory */
+-			break;
+-		}
++		} else
+ 
+                 /* ignore . and .. */
+-                if (!strcmp(pool.d_name, ".") || !strcmp(pool.d_name, ".."))
++                if (!strcmp(pool_p->d_name, ".") || !strcmp(pool_p->d_name, ".."))
+                         continue;
+ 
+                 /* check output bounds */
+@@ -1206,15 +1209,15 @@ int llapi_get_poollist(const char *name, char **poollist, int list_size,
+ 		}
+ 
+                 /* +2 for '.' and final '\0' */
+-		if (used + strlen(pool.d_name) + strlen(fsname) + 2
++		if (used + strlen(pool_p->d_name) + strlen(fsname) + 2
+ 		    > buffer_size) {
+ 			rc = -EOVERFLOW;
+ 			goto free_dir;
+ 		}
+ 
+-                sprintf(buffer + used, "%s.%s", fsname, pool.d_name);
++                sprintf(buffer + used, "%s.%s", fsname, pool_p->d_name);
+                 poollist[nb_entries] = buffer + used;
+-                used += strlen(pool.d_name) + strlen(fsname) + 2;
++                used += strlen(pool_p->d_name) + strlen(fsname) + 2;
+                 nb_entries++;
+         }
+ 
