@@ -85,6 +85,8 @@ BuildRequires:  libpng-devel
 BuildRequires:  libtiff-devel
 BuildRequires:  perl
 BuildRequires:  readline-devel
+BuildRequires: lzma-devel
+BuildRequires: curl-devel
 %if 0%{?suse_version} > 1020
 %if 0%{?suse_version} < 1230
 %if 0%{?suse_version} > 1120 
