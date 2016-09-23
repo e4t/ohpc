@@ -96,6 +96,10 @@ BuildRequires:  lapack-devel
 BuildRequires:  python-devel
 BuildRequires:  python-numpy-%{compiler_family}%{PROJ_DELIM}
 BuildRequires:  swig
+BuildRequires:  python-setuptools
+BuildRequires:  python-Cython
+Requires:  python-setuptools
+Requires:  python-Cython
 #%if 0%{?suse_version} > 1140
 #BuildRequires:  suitesparse-devel-static
 #%endif
