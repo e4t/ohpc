@@ -68,6 +68,7 @@ License:   Tuning and Analysis Utilities License
 Group:     %{PROJ_NAME}/perf-tools
 Url:       http://www.cs.uoregon.edu/research/tau/home.php
 Source0:   https://www.cs.uoregon.edu/research/tau/tau_releases/tau-%{version}.tar.gz
+Patch1:	   Don-t-declare-Tau_MPI_T_initialization-when-TAU_MPI_T-not-defined.patch
 Provides:  lib%PNAME.so()(64bit)
 Provides:  perl(ebs2otf)
 Conflicts: lib%pname < %version-%release
@@ -107,6 +108,7 @@ automatic instrumentation tool.
 
 %prep
 %setup -q -n %{pname}-%{version}
+%patch1 -p1
 
 %ifarch x86_64
 sed -i -e 's/^BITS.*/BITS = 64/' src/Profile/Makefile.skel

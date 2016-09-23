@@ -1,0 +1,40 @@
+From: Egbert Eich <eich@suse.de>
+Date: Fri Sep 23 15:11:08 2016 +0200
+Subject: [PATCH]Don't declare Tau_MPI_T_initialization when TAU_MPI_T not defined
+Git-commit: 52cdc0990c002b93579a2e36c8e6da6e1b4756f0
+References: 
+Signed-off-by: Egbert Eich <eich@suse.com>
+
+This avoids a spurious compiler waring about no return value
+of a non-void function.
+
+Signed-off-by: Egbert Eich <eich@suse.de>
+---
+ src/Profile/TauMpi.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/Profile/TauMpi.c b/src/Profile/TauMpi.c
+index 1644b6d..adfcffa 100644
+--- a/src/Profile/TauMpi.c
++++ b/src/Profile/TauMpi.c
+@@ -1594,8 +1594,9 @@ int * resultlen;
+ 
+   return returnVal;
+ }
+-int Tau_MPI_T_initialization(void) {
++
+ #ifdef TAU_MPI_T
++static int Tau_MPI_T_initialization(void) {
+   int returnVal;
+   if (TauEnv_get_track_mpi_t_pvars()) {
+     Tau_mpi_t_initialize();
+@@ -1604,8 +1605,8 @@ int Tau_MPI_T_initialization(void) {
+     returnVal = Tau_mpi_t_cvar_initialize();
+   }
+   return returnVal;
+-#endif /* TAU_MPI_T */
+ }
++#endif /* TAU_MPI_T */
+ 
+ int  MPI_Init( argc, argv )
+ int * argc;
