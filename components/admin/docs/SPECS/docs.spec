@@ -33,7 +33,11 @@ BuildRequires:  texlive-draftwatermark
 BuildRequires:  texlive-tcolorbox
 BuildRequires:  texlive-environ
 BuildRequires:  texlive-trimspaces
+%if 0%{?suse_version} || 0%{?sle_version}
+BuildRequires:  texlive-latexmk-bin
+%else
 BuildRequires:  latexmk
+%endif
 BuildRequires:  git
 Requires:       make
 
