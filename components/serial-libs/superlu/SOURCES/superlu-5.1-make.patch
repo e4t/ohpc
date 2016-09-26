@@ -6,7 +6,8 @@
  #
 -SuperLUroot	= $(HOME)/Dropbox/Codes/SuperLU/SuperLU
 +SuperLUroot	= ../
- SUPERLULIB   	= $(SuperLUroot)/lib/libsuperlu_5.1.a
+-SUPERLULIB   	= $(SuperLUroot)/lib/libsuperlu_5.1.a
++SUPERLULIB   	= $(SuperLUroot)/lib/libsuperlu.a
  
  #BLASLIB   	= $(SuperLUroot)/lib/libblas.a
  

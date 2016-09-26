@@ -98,6 +98,7 @@ Docu can be found on http://www.netlib.org.
 
 %prep
 %setup -q -n SuperLU_%{version}
+cp MAKE_INC/make.linux make.inc
 %patch -p1
 %patch1 -p1
 %patch2 -p1
@@ -110,7 +111,7 @@ export OHPC_COMPILER_FAMILY=%{compiler_family}
 make lib
 
 mkdir tmp 
-(cd tmp; ar -x ../lib/libsuperlu_%{version}.a)
+(cd tmp; ar -x ../lib/libsuperlu.a)
 $FC -shared -Wl,-soname,libsuperlu.so.4 -o lib/libsuperlu.so tmp/*.o
 
 %install
