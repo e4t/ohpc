@@ -29,12 +29,7 @@ Source1: OHPC_macros
 ExclusiveOS: linux
 DocDir: %{OHPC_PUB}/doc/contrib
 Conflicts: warewulf <= 2.9
-# 06/14/14 karl.w.schulz@intel.com - SUSE does not allow files in /usr/lib64 for noarch package
-%if 0%{?sles_version} || 0%{?suse_version}
-BuildArch: x86_64
-%else
 BuildArch: noarch
-%endif
 BuildRoot: %{?_tmppath}/%{pname}-%{version}-%{release}-root
 # 09/10/14 charles.r.baird@intel.com - patch to add SuSE as a system type
 Patch1: warewulf-common.system.patch
