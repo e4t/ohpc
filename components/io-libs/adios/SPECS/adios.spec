@@ -107,6 +107,8 @@ Requires: lustre-client%{PROJ_DELIM}
 # define fdupes, clean up rpmlint errors
 BuildRequires: fdupes
 %endif
+# BuildRequires for version 1.10.0 due to not up-to-date sources: aclocal.m4' is newer than config.h.in
+BuildRequires: autoconf
 
 # Default library install path
 %define install_path %{OHPC_LIBS}/%{compiler_family}/%{mpi_family}/%{pname}/%version
@@ -216,7 +218,7 @@ module load numpy
 export CFLAGS="-I%buildroot%{install_path}/include -I$NUMPY_DIR$PPATH/numpy/core/include -I$(pwd)/src/public -L$(pwd)/src"
 pushd wrappers/numpy
 make MPI=y python
-python setup.py install --prefix="%buildroot%{install_path}/python"
+python setup.py install --root="%buildroot" --prefix="%{install_path}/python"
 popd
 
 %if 0%{?rhel_version} || 0%{?centos_version}
@@ -297,7 +299,7 @@ EOF
 %doc ChangeLog
 %doc KNOWN_BUGS
 %doc NEWS
-%doc README
+%doc README.md
 %doc TODO
 
 %changelog
