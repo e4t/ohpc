@@ -38,6 +38,19 @@ BuildRequires: intel_licenses
 %endif
 %endif
 
+%ifarch aarch64
+%define platform arm64_linux
+%else
+%ifarch x86_64
+%define platform x86_64
+%else
+%ifarch %ix86
+%define platform linux
+%else
+%error "unsupported arch"
+%endif
+%endif
+%endif
 #-ohpc-header-comp-end------------------------------------------------
 
 # Base package name
@@ -94,29 +107,36 @@ rm -f %buildroot%{install_path}/sparc64fx
 rm -f %buildroot%{install_path}/xt3
 rm -f %buildroot%{install_path}/contrib/rose/roseparse/config.log
 rm -f %buildroot%{install_path}/contrib/rose/roseparse/config.status
-rm -f %buildroot%{install_path}/contrib/rose/edg44/x86_64/roseparse/config.log
-rm -f %buildroot%{install_path}/contrib/rose/edg44/x86_64/roseparse/config.status
+rm -f %buildroot%{install_path}/contrib/rose/edg44/%{platform}/roseparse/config.log
+rm -f %buildroot%{install_path}/contrib/rose/edg44/%{platform}/roseparse/config.status
 rm -f %buildroot%{install_path}/.all_configs
 rm -f %buildroot%{install_path}/.last_config
-pushd %buildroot%{install_path}/x86_64/bin
+pushd %buildroot%{install_path}/%{platform}/bin
 sed -i 's|%{buildroot}||g' $(egrep -IR '%{buildroot}' ./|awk -F : '{print $1}')
 rm -f edg33-upcparse
-ln -s ../../contrib/rose/roseparse/upcparse edg33-upcparse
-sed -i 's|%buildroot||g' ../../contrib/rose/roseparse/upcparse
+if [ -e ../../contrib/rose/roseparse/upcparse ]; then
+    ln -s ../../contrib/rose/roseparse/upcparse edg33-upcparse
+    sed -i 's|%buildroot||g' ../../contrib/rose/roseparse/upcparse
+fi
 rm -f edg44-c-roseparse
-ln -s  ../../contrib/rose/edg44/x86_64/roseparse/edg44-c-roseparse
-sed -i 's|%buildroot||g' ../../contrib/rose/edg44/x86_64/roseparse/edg44-c-roseparse
 rm -f edg44-cxx-roseparse
-ln -s  ../../contrib/rose/edg44/x86_64/roseparse/edg44-cxx-roseparse
-sed -i 's|%buildroot||g' ../../contrib/rose/edg44/x86_64/roseparse/edg44-cxx-roseparse
 rm -f edg44-upcparse
-ln -s  ../../contrib/rose/edg44/x86_64/roseparse/edg44-upcparse
-sed -i 's|%buildroot||g' ../../contrib/rose/edg44/x86_64/roseparse/edg44-upcparse
+if [ -d ../../contrib/rose/edg44 ]; then
+    ln -s  ../../contrib/rose/edg44/%{platform}/roseparse/edg44-c-roseparse
+    sed -i 's|%buildroot||g' ../../contrib/rose/edg44/%{platform}/roseparse/edg44-c-roseparse
+    ln -s  ../../contrib/rose/edg44/%{platform}/roseparse/edg44-cxx-roseparse
+    sed -i 's|%buildroot||g' ../../contrib/rose/edg44/%{platform}/roseparse/edg44-cxx-roseparse
+    ln -s  ../../contrib/rose/edg44/%{platform}/roseparse/edg44-upcparse
+    sed -i 's|%buildroot||g' ../../contrib/rose/edg44/%{platform}/roseparse/edg44-upcparse
+fi
+if [ -e ../../contrib/rose/roseparse/roseparse ]; then
+   sed -i 's|%buildroot||g' ../../contrib/rose/roseparse/roseparse
+   rm -f roseparse
+   ln -s  ../../contrib/rose/roseparse/roseparse
+fi
 rm -f pebil.static
-ln -s  ../../contrib/pebil/pebil/pebil.static
-rm -f roseparse
-ln -s  ../../contrib/rose/roseparse/roseparse
-sed -i 's|%buildroot||g' ../../contrib/rose/roseparse/roseparse
+[ -e ../../contrib/pebil/pebil/pebil.static ] && ln -s  ../../contrib/pebil/pebil/pebil.static
+
 sed -i 's|/usr/local/bin/perl|/usr/bin/perl|g' ../../contrib/rose/rose-header-gen/config/depend.pl
 sed -i 's|/usr/local/bin/perl|/usr/bin/perl|g' ../../contrib/rose/rose-header-gen/config/cmp.pl
 rm -f ../../contrib/rose/rose-header-gen/config.log
@@ -124,7 +144,7 @@ rm -f ../../contrib/rose/rose-header-gen/config.status
 rm -f smaqao
 ln -s  ../../contrib/maqao/maqao/smaqao
 popd
-pushd %buildroot%{install_path}/x86_64
+pushd %buildroot%{install_path}/%{platform}
 rm -f include
 ln -s ../include
 popd
@@ -153,13 +173,13 @@ module-whatis "URL %{url}"
 
 set     version                     %{version}
 
-prepend-path    PATH                %{install_path}/x86_64/bin
+prepend-path    PATH                %{install_path}/%{platform}/bin
 prepend-path    MANPATH             %{install_path}/man
 prepend-path    INCLUDE             %{install_path}/include
 prepend-path    LD_LIBRARY_PATH     %{install_path}/lib
 
 setenv          %{PNAME}_DIR        %{install_path}
-setenv          %{PNAME}_BIN        %{install_path}/x86_64/bin
+setenv          %{PNAME}_BIN        %{install_path}/%{platform}/bin
 setenv          %{PNAME}_LIB        %{install_path}/lib
 setenv          %{PNAME}_INC        %{install_path}/include
 
