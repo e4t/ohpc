@@ -32,6 +32,8 @@ Group: %{PROJ_NAME}/provisioning
 URL: http://warewulf.lbl.gov/
 Source0: http://warewulf.lbl.gov/downloads/releases/warewulf-ipmi/warewulf-ipmi-%{version}.tar.gz
 Source1: OHPC_macros
+Source2: http://downloads.sourceforge.net/project/ipmitool/ipmitool/1.8.17/ipmitool-1.8.17.tar.bz2
+Patch1:  warewulf-ipmi.Update-ipmitool-to-version-1.8.17.patch
 ExclusiveOS: linux
 Requires: warewulf-common%{PROJ_DELIM}
 BuildRequires: warewulf-common%{PROJ_DELIM}
@@ -50,7 +52,9 @@ adding IPMI functionality.
 
 %prep
 %setup -n %{pname}-%{version}
-
+%patch1 -p1
+%{__rm} -f 3rd_party/BSD/ipmitool-1.8.11.tar.gz
+%{__cp} %{S:2} 3rd_party/BSD/
 
 %build
 %configure --localstatedir=%{wwpkgdir}

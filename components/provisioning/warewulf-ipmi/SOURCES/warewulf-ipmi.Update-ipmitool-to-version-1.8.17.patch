@@ -1,0 +1,85 @@
+From: Egbert Eich <eich@suse.de>
+Date: Tue Sep 27 14:06:40 2016 +0200
+Subject: [PATCH]Update ipmitool to version 1.8.17
+Git-commit: 226492e5eac9c7814cc2236b14a92676bd1ca664
+References: 
+Signed-off-by: Egbert Eich <eich@suse.com>
+
+This hopefully fixes the build on ARM.
+
+Signed-off-by: Egbert Eich <eich@suse.de>
+---
+ 3rd_party/BSD/Makefile.am | 2 +-
+ 3rd_party/BSD/Makefile.in | 2 +-
+ initramfs/Makefile.am     | 6 +++---
+ initramfs/Makefile.in     | 6 +++---
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/3rd_party/BSD/Makefile.am b/3rd_party/BSD/Makefile.am
+index 7940bde..8aef5b2 100644
+--- a/3rd_party/BSD/Makefile.am
++++ b/3rd_party/BSD/Makefile.am
+@@ -1,3 +1,3 @@
+-EXTRA_DIST = ipmitool-1.8.11.tar.gz
++EXTRA_DIST = ipmitool-1.8.17.tar.gz
+ 
+ MAINTAINERCLEANFILES = Makefile.in
+diff --git a/3rd_party/BSD/Makefile.in b/3rd_party/BSD/Makefile.in
+index fccb739..1cf8d9f 100644
+--- a/3rd_party/BSD/Makefile.in
++++ b/3rd_party/BSD/Makefile.in
+@@ -121,7 +121,7 @@ target_alias = @target_alias@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-EXTRA_DIST = ipmitool-1.8.11.tar.gz
++EXTRA_DIST = ipmitool-1.8.17.tar.gz
+ MAINTAINERCLEANFILES = Makefile.in
+ all: all-am
+ 
+diff --git a/initramfs/Makefile.am b/initramfs/Makefile.am
+index c03c216..f3e9176 100644
+--- a/initramfs/Makefile.am
++++ b/initramfs/Makefile.am
+@@ -2,14 +2,14 @@ all: ipmitool
+ 
+ top_srcdir = @top_srcdir@
+ 
+-IPMITOOL_VERSION = 1.8.11
+-IPMITOOL_SOURCE = $(top_srcdir)/3rd_party/BSD/ipmitool-$(IPMITOOL_VERSION).tar.gz
++IPMITOOL_VERSION = 1.8.17
++IPMITOOL_SOURCE = $(top_srcdir)/3rd_party/BSD/ipmitool-$(IPMITOOL_VERSION).tar.bz2
+ 
+ ipmitool:
+ 	@ if [ ! -d "_work/ipmitool/ipmitool-$(IPMITOOL_VERSION)" ]; then \
+ 	    echo "Preparing to build ipmitool" ;\
+ 	    mkdir -p _work/ipmitool;\
+-	    tar xzf $(srcdir)/$(IPMITOOL_SOURCE) -C _work/ipmitool/ ;\
++	    tar xjf $(srcdir)/$(IPMITOOL_SOURCE) -C _work/ipmitool/ ;\
+ 	fi
+ 	@ if [ ! -f "_work/ipmitool/ipmitool-$(IPMITOOL_VERSION)/src/ipmitool" ]; then \
+ 	    echo "Building ipmitool" ;\
+diff --git a/initramfs/Makefile.in b/initramfs/Makefile.in
+index 610fdcd..9b8a0ec 100644
+--- a/initramfs/Makefile.in
++++ b/initramfs/Makefile.in
+@@ -121,8 +121,8 @@ target_alias = @target_alias@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-IPMITOOL_VERSION = 1.8.11
+-IPMITOOL_SOURCE = $(top_srcdir)/3rd_party/BSD/ipmitool-$(IPMITOOL_VERSION).tar.gz
++IPMITOOL_VERSION = 1.8.17
++IPMITOOL_SOURCE = $(top_srcdir)/3rd_party/BSD/ipmitool-$(IPMITOOL_VERSION).tar.bz2
+ EXTRA_DIST = 10-ipmiconfig
+ all: all-am
+ 
+@@ -308,7 +308,7 @@ ipmitool:
+ 	@ if [ ! -d "_work/ipmitool/ipmitool-$(IPMITOOL_VERSION)" ]; then \
+ 	    echo "Preparing to build ipmitool" ;\
+ 	    mkdir -p _work/ipmitool;\
+-	    tar xzf $(srcdir)/$(IPMITOOL_SOURCE) -C _work/ipmitool/ ;\
++	    tar xjf $(srcdir)/$(IPMITOOL_SOURCE) -C _work/ipmitool/ ;\
+ 	fi
+ 	@ if [ ! -f "_work/ipmitool/ipmitool-$(IPMITOOL_VERSION)/src/ipmitool" ]; then \
+ 	    echo "Building ipmitool" ;\
