@@ -27,6 +27,7 @@ Group:   %{PROJ_NAME}/provisioning
 URL:     http://warewulf.lbl.gov/
 Source0: http://warewulf.lbl.gov/downloads/releases/warewulf-provision/warewulf-provision-%{version}.tar.gz
 Source1: OHPC_macros
+Source2: http://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/v1.43.3/e2fsprogs-1.43.3.tar.gz
 ExclusiveOS: linux
 Requires: warewulf-common%{PROJ_DELIM}
 BuildRequires: warewulf-common%{PROJ_DELIM}
@@ -43,6 +44,7 @@ Patch5: update_file_delay.patch
 Patch6: warewulf-provision.mkbootable.patch
 Patch7: warewulf-provision.sles_stateful.patch
 Patch8: warewulf-provision.Add-std-gnu90-to-get-back-behavior-of-an-older-compiler.patch
+Patch9: warewulf-provision.3rd_party-Update-to-e2fsprogs-1.43.3.patch
 
 %description
 Warewulf >= 3 is a set of utilities designed to better enable
@@ -114,6 +116,9 @@ available the included GPL software.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
+%{__rm} 3rd_party/GPL/e2fsprogs-1.42.tar.gz
+%{__cp} %{S:2} 3rd_party/GPL/
 
 %build
 %configure --localstatedir=%{wwpkgdir}

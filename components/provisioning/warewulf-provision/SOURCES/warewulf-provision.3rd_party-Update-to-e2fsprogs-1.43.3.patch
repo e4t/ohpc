@@ -1,0 +1,64 @@
+From: Egbert Eich <eich@suse.de>
+Date: Tue Sep 27 08:20:41 2016 +0200
+Subject: [PATCH]3rd_party: Update to e2fsprogs 1.43.3
+Git-commit: b3c5de65d0e321279a6cde85cf21993e3534838e
+References: 
+Signed-off-by: Egbert Eich <eich@suse.com>
+
+Signed-off-by: Egbert Eich <eich@suse.de>
+---
+ 3rd_party/GPL/Makefile.am | 2 +-
+ 3rd_party/GPL/Makefile.in | 2 +-
+ initramfs/Makefile.am     | 2 +-
+ initramfs/Makefile.in     | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/3rd_party/GPL/Makefile.am b/3rd_party/GPL/Makefile.am
+index 43d8871..f0d4cc0 100644
+--- a/3rd_party/GPL/Makefile.am
++++ b/3rd_party/GPL/Makefile.am
+@@ -1,4 +1,4 @@
+-dist_gplsrc_DATA = README busybox-1.22.1.tar.bz2 syslinux-6.02.tar.bz2 e2fsprogs-1.42.tar.gz
++dist_gplsrc_DATA = README busybox-1.22.1.tar.bz2 syslinux-6.02.tar.bz2 e2fsprogs-1.43.3.tar.gz
+ 
+ gplsrcdir = $(prefix)/src/warewulf/3rd_party/GPL/
+ 
+diff --git a/3rd_party/GPL/Makefile.in b/3rd_party/GPL/Makefile.in
+index e04652a..1a4d910 100644
+--- a/3rd_party/GPL/Makefile.in
++++ b/3rd_party/GPL/Makefile.in
+@@ -149,7 +149,7 @@ target_alias = @target_alias@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-dist_gplsrc_DATA = README busybox-1.22.1.tar.bz2 syslinux-6.02.tar.bz2 e2fsprogs-1.42.tar.gz
++dist_gplsrc_DATA = README busybox-1.22.1.tar.bz2 syslinux-6.02.tar.bz2 e2fsprogs-1.43.3.tar.gz
+ gplsrcdir = $(prefix)/src/warewulf/3rd_party/GPL/
+ MAINTAINERCLEANFILES = Makefile.in
+ all: all-am
+diff --git a/initramfs/Makefile.am b/initramfs/Makefile.am
+index 975b230..a552f5d 100644
+--- a/initramfs/Makefile.am
++++ b/initramfs/Makefile.am
+@@ -9,7 +9,7 @@ BUSYBOX_SOURCE = $(top_srcdir)/3rd_party/GPL/busybox-$(BUSYBOX_VERSION).tar.bz2
+ BUSYBOX_DIR = busybox-$(BUSYBOX_VERSION)
+ BUSYBOX_PATCHES = 
+ 
+-E2FSPROGS_VERSION = 1.42
++E2FSPROGS_VERSION = 1.43.2
+ E2FSPROGS_SOURCE = $(top_srcdir)/3rd_party/GPL/e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
+ E2FSPROGS_DIR = e2fsprogs-$(E2FSPROGS_VERSION)
+ E2FSPROGS_CONFIGARGS = --disable-testio-debug --disable-debugfs --disable-imager --disable-resizer  --disable-defrag --disable-fsck --disable-tls --disable-uuidd --disable-nls --disable-checker --disable-profile
+diff --git a/initramfs/Makefile.in b/initramfs/Makefile.in
+index 0830301..4d3489a 100644
+--- a/initramfs/Makefile.in
++++ b/initramfs/Makefile.in
+@@ -169,7 +169,7 @@ BUSYBOX_VERSION = 1.22.1
+ BUSYBOX_SOURCE = $(top_srcdir)/3rd_party/GPL/busybox-$(BUSYBOX_VERSION).tar.bz2
+ BUSYBOX_DIR = busybox-$(BUSYBOX_VERSION)
+ BUSYBOX_PATCHES = 
+-E2FSPROGS_VERSION = 1.42
++E2FSPROGS_VERSION = 1.43.3
+ E2FSPROGS_SOURCE = $(top_srcdir)/3rd_party/GPL/e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
+ E2FSPROGS_DIR = e2fsprogs-$(E2FSPROGS_VERSION)
+ E2FSPROGS_CONFIGARGS = --disable-testio-debug --disable-debugfs --disable-imager --disable-resizer  --disable-defrag --disable-fsck --disable-tls --disable-uuidd --disable-nls --disable-checker --disable-profile
